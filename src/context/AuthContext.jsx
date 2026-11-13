@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
-import { users } from '../data/users';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+import { users as staticUsers } from '../data/users';
 
 const AuthContext = createContext(null);
 
@@ -7,10 +7,20 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = useCallback((email, password) => {
-    const user = users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+  // Runtime registry — starts with static demo users, new signups are added here
+  const registryRef = useRef([...staticUsers]);
+
+  const login = useCallback((email, password, injectUser = null) => {
+    // If Signup passes a freshly-created user object, inject it first
+    if (injectUser) {
+      const exists = registryRef.current.find(u => u.email.toLowerCase() === injectUser.email.toLowerCase());
+      if (!exists) registryRef.current.push(injectUser);
+    }
+
+    const user = registryRef.current.find(
+      u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
     );
+
     if (user) {
       const { password: _pw, ...safeUser } = user;
       setCurrentUser(safeUser);
@@ -20,13 +30,22 @@ export const AuthProvider = ({ children }) => {
     return { success: false, message: 'Invalid email or password.' };
   }, []);
 
+  const register = useCallback((newUser) => {
+    const exists = registryRef.current.find(
+      u => u.email.toLowerCase() === newUser.email.toLowerCase()
+    );
+    if (exists) return { success: false, message: 'An account with this email already exists.' };
+    registryRef.current.push(newUser);
+    return { success: true };
+  }, []);
+
   const logout = useCallback(() => {
     setCurrentUser(null);
     setIsAuthenticated(false);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ currentUser, isAuthenticated, login, logout, register }}>
       {children}
     </AuthContext.Provider>
   );

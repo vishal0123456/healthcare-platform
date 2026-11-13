@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Heart, Eye, EyeOff, Shield, Stethoscope, Apple, Activity, User, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -259,6 +259,11 @@ export default function Login() {
             ))}
           </div>
           <p style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', marginTop: 12 }}>Click a role to auto-fill • No real data stored</p>
+        </div>
+
+        <div style={{ marginTop: 24, textAlign: 'center', paddingTop: 20, borderTop: '1px solid #f1f5f9' }}>
+          <span style={{ fontSize: 14, color: '#94a3b8' }}>New to MediCore?{' '}</span>
+          <Link to="/signup" style={{ fontSize: 14, color: '#0ea5e9', fontWeight: 700, textDecoration: 'none' }}>Create an account →</Link>
         </div>
       </div>
 

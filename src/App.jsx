@@ -11,6 +11,7 @@ import Nutrition from './pages/Nutrition';
 import Wellness from './pages/Wellness';
 import AccessControl from './pages/AccessControl';
 import NotFound from './pages/NotFound';
+import Signup from './pages/Signup';
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const { isAuthenticated, currentUser } = useAuth();
@@ -24,6 +25,7 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+      <Route path="/signup" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Signup />} />
       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/patients" element={<ProtectedRoute><Patients /></ProtectedRoute>} />
       <Route path="/medical-history" element={<ProtectedRoute><MedicalHistory /></ProtectedRoute>} />
