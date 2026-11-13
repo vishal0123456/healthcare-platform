@@ -10,6 +10,7 @@ import Consultations from './pages/Consultations';
 import Nutrition from './pages/Nutrition';
 import Wellness from './pages/Wellness';
 import AccessControl from './pages/AccessControl';
+import NotFound from './pages/NotFound';
 
 function ProtectedRoute({ children, adminOnly = false }) {
   const { isAuthenticated, currentUser } = useAuth();
@@ -32,7 +33,7 @@ function AppRoutes() {
       <Route path="/wellness" element={<ProtectedRoute><Wellness /></ProtectedRoute>} />
       <Route path="/access-control" element={<ProtectedRoute adminOnly><AccessControl /></ProtectedRoute>} />
       <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
@@ -40,7 +41,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/healthcare-platform">
         <AppRoutes />
       </BrowserRouter>
     </AuthProvider>
