@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Heart, Eye, EyeOff, Shield, Stethoscope, Apple, Activity, User } from 'lucide-react';
+import { Heart, Eye, EyeOff, Shield, Stethoscope, Apple, Activity, User, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const demoUsers = [
-  { role: 'Admin', email: 'admin@medicore.health', password: 'Admin@123', icon: Shield, color: '#0ea5e9' },
-  { role: 'Doctor', email: 'priya.mehta@medicore.health', password: 'Doctor@123', icon: Stethoscope, color: '#6366f1' },
-  { role: 'Patient', email: 'aarav.sharma@email.com', password: 'Patient@123', icon: User, color: '#10b981' },
-  { role: 'Nutritionist', email: 'kavya.nair@medicore.health', password: 'Nutri@123', icon: Apple, color: '#f59e0b' },
-  { role: 'Yoga Instructor', email: 'ramesh.sharma@medicore.health', password: 'Yoga@123', icon: Activity, color: '#ec4899' },
+  { role: 'Admin', email: 'admin@medicore.health', password: 'Admin@123', icon: Shield, color: '#0ea5e9', desc: 'Full system access' },
+  { role: 'Doctor', email: 'priya.mehta@medicore.health', password: 'Doctor@123', icon: Stethoscope, color: '#6366f1', desc: 'Patient & consultation mgmt' },
+  { role: 'Patient', email: 'aarav.sharma@email.com', password: 'Patient@123', icon: User, color: '#10b981', desc: 'Personal health records' },
+  { role: 'Nutritionist', email: 'kavya.nair@medicore.health', password: 'Nutri@123', icon: Apple, color: '#f59e0b', desc: 'Manage diet plans' },
+  { role: 'Yoga Instructor', email: 'ramesh.sharma@medicore.health', password: 'Yoga@123', icon: Activity, color: '#ec4899', desc: 'Wellness programs' },
+];
+
+const features = [
+  'Centralized Patient Profiles',
+  'Medical History & Reports',
+  'Consultation Records',
+  'Personalized Nutrition Plans',
+  'Yoga & Wellness Tracking',
+  'Role-Based Secure Access',
 ];
 
 export default function Login() {
@@ -19,8 +28,9 @@ export default function Login() {
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
@@ -29,175 +39,231 @@ export default function Login() {
       if (result.success) {
         navigate('/dashboard');
       } else {
-        setError(result.message);
+        setError('Invalid email or password. Try a demo account below.');
       }
       setLoading(false);
-    }, 600);
+    }, 700);
   };
 
   const fillDemo = (u) => {
     setEmail(u.email);
     setPassword(u.password);
+    setSelectedRole(u.role);
     setError('');
   };
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
       display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 20,
-      position: 'relative',
-      overflow: 'hidden',
+      background: '#0f172a',
     }}>
-      {/* Background decorations */}
-      <div style={{ position: 'absolute', top: -100, right: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,165,233,0.15), transparent 70%)' }} />
-      <div style={{ position: 'absolute', bottom: -100, left: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.15), transparent 70%)' }} />
+      {/* Left panel — branding */}
+      <div style={{
+        flex: 1,
+        background: 'linear-gradient(145deg, #0f172a 0%, #1e3a5f 60%, #0f172a 100%)',
+        padding: '48px 56px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+        className="login-left"
+      >
+        {/* Background blobs */}
+        <div style={{ position: 'absolute', top: -120, right: -80, width: 350, height: 350, borderRadius: '50%', background: 'radial-gradient(circle, rgba(14,165,233,0.12), transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -100, left: -60, width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(16,185,129,0.04), transparent 70%)', pointerEvents: 'none' }} />
 
-      <div style={{ width: '100%', maxWidth: 960, display: 'flex', gap: 48, alignItems: 'center', position: 'relative', zIndex: 1 }}>
-        {/* Left: Branding */}
-        <div style={{ flex: 1, display: 'none', flexDirection: 'column', gap: 32, color: 'white' }} className="login-brand">
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 48, height: 48, background: 'linear-gradient(135deg, #0ea5e9, #6366f1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(14,165,233,0.4)' }}>
+            <Heart size={24} color="white" />
+          </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-              <div style={{ width: 50, height: 50, background: 'linear-gradient(135deg, #0ea5e9, #6366f1)', borderRadius: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Heart size={26} color="white" />
-              </div>
-              <div>
-                <div style={{ fontSize: 24, fontWeight: 800 }}>MediCore</div>
-                <div style={{ fontSize: 12, color: '#94a3b8', letterSpacing: '0.08em' }}>HEALTHCARE PLATFORM</div>
-              </div>
-            </div>
-            <h1 style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, letterSpacing: '-0.03em', marginBottom: 16 }}>
-              Centralized<br />
-              <span style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Healthcare</span><br />
-              Management
-            </h1>
-            <p style={{ fontSize: 16, color: '#94a3b8', lineHeight: 1.7 }}>
-              A unified platform for patients, doctors, nutritionists and wellness professionals to collaborate on holistic healthcare.
-            </p>
+            <div style={{ fontSize: 22, fontWeight: 800, color: 'white', letterSpacing: '-0.02em' }}>MediCore</div>
+            <div style={{ fontSize: 10, color: '#475569', fontWeight: 600, letterSpacing: '0.12em' }}>HEALTHCARE PLATFORM</div>
+          </div>
+        </div>
+
+        {/* Hero text */}
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 14px', background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.25)', borderRadius: 999, marginBottom: 24 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#0ea5e9', animation: 'pulse 2s infinite' }} />
+            <span style={{ fontSize: 12, color: '#7dd3fc', fontWeight: 600 }}>Algomindz Solutions Pvt. Ltd.</span>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {['Centralized Patient Profiles', 'Medical History & Reports', 'Consultation Records', 'Personalized Nutrition Plans', 'Yoga & Wellness Tracking', 'Role-Based Secure Access'].map(f => (
+          <h1 style={{ fontSize: 46, fontWeight: 900, color: 'white', lineHeight: 1.08, letterSpacing: '-0.03em', marginBottom: 20 }}>
+            Centralized<br />
+            <span style={{ background: 'linear-gradient(90deg, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Healthcare
+            </span><br />
+            Management
+          </h1>
+          <p style={{ fontSize: 16, color: '#94a3b8', lineHeight: 1.75, maxWidth: 380, marginBottom: 36 }}>
+            A unified platform for patients, doctors, nutritionists and wellness professionals to collaborate on holistic healthcare.
+          </p>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+            {features.map(f => (
               <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'rgba(14,165,233,0.2)', border: '1px solid rgba(14,165,233,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#0ea5e9' }}>✓</div>
-                <span style={{ fontSize: 14, color: '#cbd5e1' }}>{f}</span>
+                <CheckCircle size={15} color="#10b981" style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: 13, color: '#cbd5e1' }}>{f}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Right: Login form */}
-        <div style={{ flex: '0 0 440px', width: '100%', maxWidth: 440 }}>
-          <div style={{ background: 'rgba(255,255,255,0.97)', borderRadius: 24, padding: '40px 36px', boxShadow: '0 25px 60px rgba(0,0,0,0.4)' }}>
-            {/* Logo on form */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 32 }}>
-              <div style={{ width: 42, height: 42, background: 'linear-gradient(135deg, #0ea5e9, #6366f1)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Heart size={22} color="white" />
-              </div>
-              <div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: '#0f172a' }}>MediCore</div>
-                <div style={{ fontSize: 10, color: '#94a3b8', letterSpacing: '0.08em' }}>HEALTHCARE PLATFORM</div>
-              </div>
+        {/* Bottom stats */}
+        <div style={{ display: 'flex', gap: 36 }}>
+          {[
+            { val: '248+', label: 'Patients' },
+            { val: '18', label: 'Doctors' },
+            { val: '5', label: 'Roles' },
+            { val: '7', label: 'Modules' },
+          ].map(s => (
+            <div key={s.label}>
+              <p style={{ fontSize: 24, fontWeight: 900, color: 'white' }}>{s.val}</p>
+              <p style={{ fontSize: 12, color: '#475569', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{s.label}</p>
             </div>
+          ))}
+        </div>
+      </div>
 
-            <h2 style={{ fontSize: 24, fontWeight: 800, color: '#0f172a', marginBottom: 6 }}>Welcome back</h2>
-            <p style={{ fontSize: 14, color: '#64748b', marginBottom: 28 }}>Sign in to your healthcare account</p>
+      {/* Right panel — form */}
+      <div style={{
+        width: 460,
+        background: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        padding: '48px 44px',
+        overflowY: 'auto',
+        flexShrink: 0,
+      }}>
+        <div style={{ marginBottom: 36 }}>
+          <h2 style={{ fontSize: 28, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em', marginBottom: 6 }}>Sign in</h2>
+          <p style={{ fontSize: 15, color: '#64748b' }}>Access your healthcare dashboard</p>
+        </div>
 
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label className="form-label">Email Address</label>
-                <input
-                  type="email"
-                  className="form-input"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="your.email@medicore.health"
-                  required
-                  autoComplete="email"
-                />
-              </div>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Email Address</label>
+            <input
+              type="email"
+              className="form-input"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+              autoComplete="email"
+              style={{ fontSize: 15 }}
+            />
+          </div>
 
-              <div className="form-group">
-                <label className="form-label">Password</label>
-                <div style={{ position: 'relative' }}>
-                  <input
-                    type={showPw ? 'text' : 'password'}
-                    className="form-input"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    required
-                    style={{ paddingRight: 44 }}
-                    autoComplete="current-password"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPw(!showPw)}
-                    style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', display: 'flex' }}
-                  >
-                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-
-              {error && (
-                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 8, padding: '10px 14px', fontSize: 13, color: '#dc2626', marginBottom: 16 }}>
-                  {error}
-                </div>
-              )}
-
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPw ? 'text' : 'password'}
+                className="form-input"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                autoComplete="current-password"
+                style={{ paddingRight: 44, fontSize: 15 }}
+              />
               <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={loading}
-                style={{ width: '100%', justifyContent: 'center', padding: '12px', fontSize: 15 }}
+                type="button"
+                onClick={() => setShowPw(!showPw)}
+                style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', display: 'flex', alignItems: 'center' }}
+                aria-label={showPw ? 'Hide password' : 'Show password'}
               >
-                {loading ? (
-                  <div style={{ width: 18, height: 18, border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                ) : 'Sign In'}
+                {showPw ? <EyeOff size={17} /> : <Eye size={17} />}
               </button>
-            </form>
-
-            {/* Demo accounts */}
-            <div style={{ marginTop: 28 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
-                <span style={{ fontSize: 12, color: '#94a3b8', fontWeight: 500 }}>DEMO ACCOUNTS</span>
-                <div style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
-              </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                {demoUsers.map((u) => (
-                  <button
-                    key={u.role}
-                    onClick={() => fillDemo(u)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: 8,
-                      padding: '8px 10px',
-                      border: `1.5px solid ${u.color}30`,
-                      borderRadius: 8,
-                      background: `${u.color}08`,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = u.color; e.currentTarget.style.background = `${u.color}15`; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = `${u.color}30`; e.currentTarget.style.background = `${u.color}08`; }}
-                  >
-                    <u.icon size={14} color={u.color} />
-                    <span style={{ fontSize: 12, fontWeight: 600, color: u.color }}>{u.role}</span>
-                  </button>
-                ))}
-              </div>
-              <p style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', marginTop: 10 }}>Click any role to auto-fill credentials</p>
             </div>
           </div>
+
+          {error && (
+            <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '11px 14px', fontSize: 13, color: '#dc2626', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 16 }}>⚠️</span> {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%',
+              padding: '13px',
+              background: loading ? '#94a3b8' : 'linear-gradient(135deg, #0ea5e9, #6366f1)',
+              color: 'white',
+              border: 'none',
+              borderRadius: 10,
+              fontSize: 15,
+              fontWeight: 700,
+              cursor: loading ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 10,
+              transition: 'all 0.2s',
+              boxShadow: loading ? 'none' : '0 4px 16px rgba(14,165,233,0.35)',
+              marginBottom: 28,
+            }}
+          >
+            {loading ? (
+              <>
+                <div style={{ width: 18, height: 18, border: '2px solid rgba(255,255,255,0.4)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                Signing in...
+              </>
+            ) : (
+              'Sign In to MediCore'
+            )}
+          </button>
+        </form>
+
+        {/* Demo accounts */}
+        <div>
+          <div className="divider-text" style={{ marginBottom: 16 }}>DEMO ACCOUNTS</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {demoUsers.map(u => (
+              <button
+                key={u.role}
+                onClick={() => fillDemo(u)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  padding: '10px 14px',
+                  border: `1.5px solid ${selectedRole === u.role ? u.color : '#e2e8f0'}`,
+                  borderRadius: 10,
+                  background: selectedRole === u.role ? `${u.color}0d` : 'white',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                  textAlign: 'left',
+                  width: '100%',
+                }}
+                onMouseEnter={e => { if (selectedRole !== u.role) { e.currentTarget.style.borderColor = u.color; e.currentTarget.style.background = `${u.color}08`; } }}
+                onMouseLeave={e => { if (selectedRole !== u.role) { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.background = 'white'; } }}
+              >
+                <div style={{ width: 34, height: 34, borderRadius: 8, background: `${u.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <u.icon size={16} color={u.color} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: '#0f172a' }}>{u.role}</p>
+                  <p style={{ fontSize: 11, color: '#94a3b8' }}>{u.desc}</p>
+                </div>
+                {selectedRole === u.role && <CheckCircle size={16} color={u.color} />}
+              </button>
+            ))}
+          </div>
+          <p style={{ fontSize: 11, color: '#94a3b8', textAlign: 'center', marginTop: 12 }}>Click a role to auto-fill • No real data stored</p>
         </div>
       </div>
 
       <style>{`
-        @media (min-width: 768px) { .login-brand { display: flex !important; } }
+        @media (max-width: 900px) { .login-left { display: none !important; } }
       `}</style>
     </div>
   );
